@@ -2,6 +2,8 @@
 let username = prompt("아이디를 입력하세요");
 let roomNum = prompt("채팅방 번호를 입력하세요");
 
+document.querySelector("#username").innerHTML = username;
+
 // SSE 연결
 const eventSource = new EventSource(`http://localhost:8080/chat/roomNum/${roomNum}`);
 
@@ -20,19 +22,27 @@ eventSource.onmessage = (event) => {
 // 파란박스 만들기
 function getSendMsgBox(data) {
 
+    let md = data.createdAt.substring(5,10)
+    let tm = data.createdAt.substring(11,16)
+    convertTime = tm + " | " + md
+
     return `<div class="sent_msg">
                 <p>${data.msg}</p>
-                <span class="time_date"> ${data.createdAt}< ${data.sender} /span>
+                <span class="time_date"> ${convertTime} / ${data.sender} </span>
             </div>`;
 }
 
 //회색박스 만들기
 function getReceiveMsgBox(data) {
 
+    let md = data.createdAt.substring(5,10)
+    let tm = data.createdAt.substring(11,16)
+    convertTime = tm + " | " + md
+
     return `<div class="received_withd_msg">
-    <p>${data.msg}</p>
-    <span class="time_date"> ${data.createdAt}< ${data.sender} /span>
-</div>`;
+                <p>${data.msg}</p>
+                <span class="time_date"> ${convertTime} / ${data.sender} </span>
+            </div>`;
 }
 
 // 최초 초기화될 때 1번방 3건이 있으면 3건을 다 가져옴
@@ -48,6 +58,8 @@ function initMyMessage(data) {
     sendBox.innerHTML = getSendMsgBox(data);
 
     chatBox.append(sendBox);
+
+    document.documentElement.scrollTop = document.body.scrollHeight;
 }
 
 // 회색박스 초기화
@@ -57,10 +69,12 @@ function initYourMessage(data) {
 
     let receivedBox = document.createElement("div");
 
-    receivedBox.className = "received_msg";
-    receivedBox.innerHTML = getreceiveMsgBox(data);
+    receivedBox.className = "incoming_msg";
+    receivedBox.innerHTML = getReceiveMsgBox(data);
 
     chatBox.append(receivedBox);
+
+    document.documentElement.scrollTop = document.body.scrollHeight;
 }
 
 // AJAX 채팅 메세지 전송
