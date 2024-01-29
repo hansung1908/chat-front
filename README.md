@@ -1,2 +1,3 @@
 # chat-front
-- chat 프로젝트의 채팅 프론트엔드 부분
+- chat 프로젝트의 채팅 인터페이스
+- html, js, css, bootstrap, jquery
